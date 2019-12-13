@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>限时抽奖活动</title>
+		<style type="text/css">
+			
+			#ccontainer{
+				margin: 20px auto;
+				width: 450px;
+				
+			}
+			#turntable{
+				width: 450px;
+				height: 450px;
+				background-image: url(img/turntable.png);
+				border-top: 1px solid white;
+				background-repeat: no-repeat;
+				
+			}
+			#pointer{
+				width: 174px;
+				height: 266px;
+				background-image: url(img/pointer.png);
+				background-repeat: no-repeat;
+				margin-left: 138px;
+				margin-top: 92px;
+				
+				
+				/*animation-name: zhuan;*/
+				/*animation-delay: 0s;
+				animation-direction: normal;
+				animation-duration: 1s;
+				animation-play-state: running;
+				animation-timing-function: linear;
+				animation-fill-mode: both;
+				animation-iteration-count: infinite;*/
+			}
+			
+			@keyframes zhuan{
+				from{
+					transform: rotate(0deg);
+				}
+				to{
+					transform: rotate(360deg);
+				}
+			}
+			
+			#time{
+				text-align: center;
+				font-size: 25px;
+				color: orange;
+				font-weight: bold;
+			}		
+		</style>
+		
+		
+	</head>
+	<body>
+		<div id="ccontainer">
+			<div id="turntable">
+				
+				<div id="pointer" onclick="start()">
+					
+				</div>
+			</div>
+		</div>
+		<div id="time">
+			
+		</div>
+		<script type="text/javascript">
+			var tip = document.getElementById("time");
+			var one = new Date(2020,1,1,0,0,0,0);
+			var isRunning = true;
+			setInterval(function(){
+				var now = new Date();
+				var cha = one.getTime() - now.getTime();
+				if (cha > 0) {
+					var ss = parseInt(cha / 1000);
+					var mm = parseInt(ss / 60);
+					var s = ss - mm*60;
+					var hh = parseInt(mm / 60);
+					var m = mm - hh*60;
+					var dd = parseInt(hh / 24);
+					var h = hh - dd*24;
+					
+					tip.innerText = "距离活动结束时间还有" + dd + "天" + h + "时" + m + "分" + s +"秒";
+					isRunning = true;
+				} else{
+					isRunning = false;
+					tip.innerText = "当前抽奖已结束";
+				}
+			},500);
+				
+				
+			var flat = true;
+			var loop = 360;
+			var spped = 10;
+			var remain = 0;
+			var deg = 0;
+			var isStart = true;
+			var point = document.getElementById("pointer");
+			function circle(){
+				isStart = false;
+				
+				if(flat){
+					var loops = parseInt(Math.random() * 3 + 1);
+					remain = randomRemain() + loops * loop - deg;
+					flat = false;
+				}
+				if(remain <= 0){
+					while(deg > loop){
+						deg -= loop;
+					}
+					remainTip();
+					flat = true;
+					return;
+				}else if(remain < spped){
+					deg += remain;
+					remain = 0;
+				}else{
+					deg += spped;
+					remain -=spped;
+				}
+				point.style.transform = "rotate(" + deg  +  "deg)";
+				requestAnimationFrame(circle);
+			}
+			
+			function remainTip(){
+				if(deg < 52){
+					alert("很遗憾，您未中奖");
+				}else if(deg < 103){
+					alert("恭喜您，获得了提升白条额度奖励");
+				}else if(deg < 154){
+					alert("恭喜您，获得了分期服务费奖励");
+				}else if(deg < 203){
+					alert("恭喜您，获得了5元免单奖励");
+				}else if(deg < 250){
+					alert("恭喜您，获得了10元免单奖励");
+				}else if(deg < 306){
+					alert("恭喜您，获得了50元免单奖励");
+				}else  if(deg < 358){
+					alert("恭喜您，获得了4999元免单奖励");
+				}else{
+					alert("很遗憾，您未中奖");
+				}
+				isStart = true;
+			}
+			
+			function randomRemain(){
+				var a = parseInt(Math.random() * 100);
+				if(a < 50){
+					var r = parseInt(Math.random() * 54 - 2);
+					r = r < 0 ? r+360:r;
+					return r;
+				}else if(a < 75){
+					return parseInt(Math.random() * 51 + 52);
+				}else if(a < 87){
+					return parseInt(Math.random() * 51 + 103);
+				}else if(a < 93){
+					return parseInt(Math.random() * 49 + 154)
+				}else if(a < 97){
+					return parseInt(Math.random() * 47 + 203)
+				}else if(a < 99){
+					return parseInt(Math.random() * 56 + 250)
+				}else{
+					return parseInt(Math.random() * 52 + 306)
+				}
+			}
+			
+			function start(){
+				if(isRunning){
+					if(isStart){
+						circle();
+					}else{
+						alert("请勿重复点击，请等待当前抽奖完成！")
+					}
+				}else{
+					alert("抽奖活动已经结束！")
+				}
+				
+			}
+			
+			
+		</script>
+	</body>
+</html>
